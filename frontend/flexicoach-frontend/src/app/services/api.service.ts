@@ -92,7 +92,7 @@ export interface UserChallengesResponse {
   providedIn: 'root'
 })
 export class ApiService {
-  private baseUrl = '/api';
+  private baseUrl = 'http://localhost:8000';
 
   constructor(private http: HttpClient) {}
 

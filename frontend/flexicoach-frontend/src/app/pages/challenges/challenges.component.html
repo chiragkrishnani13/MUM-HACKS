@@ -47,9 +47,12 @@
       <button 
         [class]="getButtonClass(challenge)"
         [disabled]="isButtonDisabled(challenge)"
-        (click)="acceptChallenge(challenge)">
+        (click)="acceptChallenge(challenge); $event.stopPropagation()">
         {{ getButtonLabel(challenge) }}
       </button>
+      <div *ngIf="challengeStates.get(challenge.id)?.error" style="color: red; margin-top: 8px; font-size: 0.9rem;">
+        {{ challengeStates.get(challenge.id)?.error }}
+      </div>
     </div>
   </div>
 

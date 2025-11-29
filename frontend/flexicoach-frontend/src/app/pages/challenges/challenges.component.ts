@@ -74,25 +74,37 @@ export class ChallengesComponent implements OnInit {
    * Accept/Start a challenge
    */
   acceptChallenge(challenge: Challenge): void {
-    console.log('acceptChallenge called for:', challenge.id, challenge);
+    console.log('🎯 Accept Challenge Button Clicked!');
+    console.log('Challenge ID:', challenge.id);
+    console.log('Challenge Status:', challenge.status);
+    console.log('Full Challenge:', challenge);
     
     if (challenge.status === 'active' || challenge.status === 'completed') {
-      console.log('Challenge already started/completed');
-      return; // Already started or completed
+      console.log('⚠️ Challenge already started/completed');
+      alert('This challenge is already ' + challenge.status);
+      return;
     }
 
     const state = this.challengeStates.get(challenge.id);
-    if (!state || state.loading) {
-      console.log('Challenge already processing or no state');
-      return; // Already processing
+    console.log('Challenge State:', state);
+    
+    if (!state) {
+      console.error('❌ No state found for challenge');
+      return;
+    }
+    
+    if (state.loading) {
+      console.log('⏳ Challenge already processing');
+      return;
     }
 
     // Set loading state
     this.challengeStates.set(challenge.id, { loading: true, error: null });
-    console.log('Starting challenge API call...');
+    console.log('✅ Loading state set, calling API...');
 
     this.apiService.startChallenge(this.userId, challenge.id, challenge).subscribe({
       next: (response) => {
+        console.log('📥 API Response:', response);
         if (response.success) {
           // Update local challenge state
           challenge.status = 'active';
@@ -102,21 +114,26 @@ export class ChallengesComponent implements OnInit {
           // Update state
           this.challengeStates.set(challenge.id, { loading: false, error: null });
           
-          console.log(`Challenge "${challenge.title}" started successfully`);
+          console.log(`✅ Challenge "${challenge.title}" started successfully!`);
+          alert(`Challenge accepted! "${challenge.title}" is now active.`);
         } else {
-          // Handle failure
+          console.error('❌ API returned failure:', response.message);
           this.challengeStates.set(challenge.id, { 
             loading: false, 
             error: response.message || 'Failed to start challenge' 
           });
+          alert('Failed to start challenge: ' + (response.message || 'Unknown error'));
         }
       },
       error: (err) => {
-        console.error('Error starting challenge:', err);
+        console.error('❌ API Error:', err);
+        console.error('Error details:', err.error);
+        console.error('Error status:', err.status);
         this.challengeStates.set(challenge.id, { 
           loading: false, 
           error: 'Failed to start challenge. Please try again.' 
         });
+        alert('Error starting challenge. Check console for details.');
       }
     });
   }
