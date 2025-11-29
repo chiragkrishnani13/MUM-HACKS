@@ -1,0 +1,78 @@
+<div class="action-plan-page" *ngIf="analysis; else noData">
+  <div class="page-header">
+    <h2>📋 Your Personalized Action Plan</h2>
+    <p class="page-subtitle">These steps are auto-generated from your real spending patterns</p>
+  </div>
+  
+  <div class="health-summary">
+    <div class="health-score-display" *ngIf="analysis.health_score">
+      <h3>{{ analysis.health_score.emoji }} Financial Health</h3>
+      <div class="score-big">{{ analysis.health_score.score }}/100</div>
+      <p>{{ analysis.health_score.rating }}</p>
+    </div>
+  </div>
+
+  <div class="action-sections">
+    <div class="action-section">
+      <div class="section-header">
+        <h3>🎯 Immediate Actions</h3>
+        <span class="priority-badge immediate">High Priority</span>
+      </div>
+      <div class="action-list">
+        <div class="action-item" *ngFor="let flag of analysis.flags.slice(0, 3); let i = index">
+          <div class="action-tags">
+            <span class="tag priority-high">Immediate</span>
+            <span class="tag impact-high">High Impact</span>
+          </div>
+          <span class="action-bullet">✓</span>
+          <span class="action-text">{{ flag }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="action-section" *ngIf="analysis.savings_goals && analysis.savings_goals.length > 0">
+      <div class="section-header">
+        <h3>💰 Savings Focus</h3>
+        <span class="priority-badge medium">Medium-term</span>
+      </div>
+      <div class="action-list">
+        <div class="action-item" *ngFor="let goal of analysis.savings_goals.slice(0, 3)">
+          <div class="action-tags">
+            <span class="tag priority-medium">Medium-term</span>
+            <span class="tag impact-medium">Medium Impact</span>
+          </div>
+          <span class="action-bullet">💵</span>
+          <div class="action-content">
+            <strong>{{ goal.type }}</strong>
+            <p>Target: ₹{{ goal.target | number:'1.2-2' }} | Timeline: {{ goal.timeline }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="action-section" *ngIf="analysis.health_score">
+      <div class="section-header">
+        <h3>📈 Next Steps</h3>
+        <span class="priority-badge long">Long-term</span>
+      </div>
+      <div class="action-list">
+        <div class="action-item" *ngFor="let factor of analysis.health_score.factors">
+          <div class="action-tags">
+            <span class="tag priority-low">Long-term</span>
+            <span class="tag impact-medium">Medium Impact</span>
+          </div>
+          <span class="action-bullet">→</span>
+          <span class="action-text">{{ factor }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #noData>
+  <div class="no-data">
+    <div class="no-data-icon">📋</div>
+    <h2>No Action Plan Available</h2>
+    <p>Upload your transactions to generate a personalized action plan.</p>
+  </div>
+</ng-template>

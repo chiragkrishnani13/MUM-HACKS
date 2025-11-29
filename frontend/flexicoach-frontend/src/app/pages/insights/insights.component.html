@@ -1,0 +1,122 @@
+<div class="insights-page" *ngIf="analysis; else noData">
+  <!-- Financial Momentum -->
+  <div class="momentum-card" *ngIf="analysis.momentum">
+    <h2>{{ analysis.momentum.emoji }} Financial Momentum</h2>
+    <div class="momentum-gauge">
+      <div class="gauge-container">
+        <svg viewBox="0 0 200 120">
+          <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#e0e0e0" stroke-width="20" stroke-linecap="round"/>
+          <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" [attr.stroke]="getMomentumColor(analysis.momentum.score)" 
+                stroke-width="20" stroke-linecap="round"
+                [attr.stroke-dasharray]="251" 
+                [attr.stroke-dashoffset]="251 - (251 * analysis.momentum.score / 100)"/>
+        </svg>
+        <div class="gauge-value">
+          <div class="score">{{ analysis.momentum.score }}</div>
+          <div class="label">{{ analysis.momentum.momentum }}</div>
+        </div>
+      </div>
+    </div>
+    <p class="momentum-message">{{ analysis.momentum.message }}</p>
+    <div class="momentum-stats">
+      <div class="stat">
+        <span class="label">Spending Change</span>
+        <span class="value" [class.positive]="analysis.momentum.spending_change > 0">
+          {{ analysis.momentum.spending_change > 0 ? '+' : '' }}{{ analysis.momentum.spending_change }}%
+        </span>
+      </div>
+      <div class="stat">
+        <span class="label">Savings Improvement</span>
+        <span class="value" [class.positive]="analysis.momentum.savings_improvement > 0">
+          {{ analysis.momentum.savings_improvement > 0 ? '+' : '' }}{{ analysis.momentum.savings_improvement }}%
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Financial Personality -->
+  <div class="personality-card" *ngIf="analysis.personality">
+    <h2>{{ analysis.personality.emoji }} Your Money Personality</h2>
+    <h3>{{ analysis.personality.personality }}</h3>
+    <div class="traits-list">
+      <div class="trait" *ngFor="let trait of analysis.personality.traits">
+        ✓ {{ trait }}
+      </div>
+    </div>
+    <div class="advice-box">
+      <strong>💡 Personalized Advice:</strong>
+      <p>{{ analysis.personality.advice }}</p>
+    </div>
+  </div>
+
+  <!-- Spending Triggers -->
+  <div class="triggers-card" *ngIf="analysis.spending_triggers && analysis.spending_triggers.triggers.length > 0">
+    <h2>⚡ Your Spending Triggers</h2>
+    <p class="subtitle">Identified {{ analysis.spending_triggers.total_triggers }} trigger(s) affecting your budget</p>
+    <div class="trigger-list">
+      <div class="trigger-item" *ngFor="let trigger of analysis.spending_triggers.triggers">
+        <div class="trigger-header">
+          <span class="trigger-type">{{ trigger.type }}</span>
+          <span class="trigger-name">{{ trigger.trigger }}</span>
+        </div>
+        <div class="trigger-impact">💰 Impact: {{ trigger.impact }}</div>
+        <div class="trigger-recommendation">
+          <strong>✓ Action:</strong> {{ trigger.recommendation }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Peer Comparison -->
+  <div class="peer-card" *ngIf="analysis.peer_comparison">
+    <h2>👥 Peer Comparison</h2>
+    <div class="bracket">Income Bracket: {{ analysis.peer_comparison.income_bracket }}</div>
+    <div class="comparison-grid">
+      <div class="comparison-item">
+        <div class="label">Your Rank</div>
+        <div class="value-large">{{ analysis.peer_comparison.rank }}</div>
+        <div class="percentile">{{ analysis.peer_comparison.percentile }}th percentile</div>
+      </div>
+      <div class="comparison-item">
+        <div class="label">Your Savings Rate</div>
+        <div class="value-large">{{ analysis.peer_comparison.your_savings_rate }}%</div>
+        <div class="sub">Peer Avg: {{ analysis.peer_comparison.peer_avg_savings_rate }}%</div>
+      </div>
+    </div>
+    <div class="insight-banner">
+      {{ analysis.peer_comparison.insight }}
+    </div>
+  </div>
+
+  <!-- Money Habits Score -->
+  <div class="habits-card" *ngIf="analysis.habits_score">
+    <h2>📊 Money Habits Score</h2>
+    <div class="score-display">
+      <div class="big-score">{{ analysis.habits_score.total_score }}/100</div>
+      <div class="grade">Grade: {{ analysis.habits_score.grade }}</div>
+    </div>
+    <div class="weakness-alert" *ngIf="getWeakestHabit()">
+      <strong>⚠️ Main Weakness:</strong> {{ getWeakestHabit() }}
+    </div>
+    <div class="habits-breakdown">
+      <div class="habit-bar" *ngFor="let item of getHabitsArray()">
+        <div class="habit-label">
+          <span>{{ item.name }}</span>
+          <span class="habit-value">{{ item.value }}/20</span>
+        </div>
+        <div class="bar-container">
+          <div class="bar-fill" [style.width.%]="(item.value / 20) * 100"></div>
+        </div>
+      </div>
+    </div>
+    <p class="habits-message">{{ analysis.habits_score.message }}</p>
+  </div>
+</div>
+
+<ng-template #noData>
+  <div class="no-data">
+    <div class="no-data-icon">🔍</div>
+    <h2>No Insights Yet</h2>
+    <p>Upload your transactions to unlock powerful insights about your spending patterns.</p>
+  </div>
+</ng-template>

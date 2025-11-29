@@ -37,24 +37,34 @@ def ask_coach(question: str, user_snapshot: dict) -> str:
         system_prompt = get_coach_system_prompt()
         user_prompt = build_user_prompt(question, user_snapshot)
         
-        # Call OpenRouter API
+        print(f"Calling OpenRouter API with model: anthropic/claude-3.5-sonnet")
+        
+        # Call OpenRouter API with Claude Sonnet for better conversational responses
         response = client.chat.completions.create(
-            model="google/gemini-flash-1.5",  # Fast and free model; alternatives: "meta-llama/llama-3.1-8b-instruct:free", "openai/gpt-3.5-turbo"
+            model="anthropic/claude-3.5-sonnet",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt}
             ],
-            temperature=0.7,
-            max_tokens=500
+            temperature=0.9,
+            max_tokens=1000,
+            top_p=0.95,
+            extra_headers={
+                "HTTP-Referer": "https://flexicoach.app",
+                "X-Title": "FlexiCoach"
+            }
         )
         
         # Extract the response
         answer = response.choices[0].message.content.strip()
+        print(f"OpenRouter API success, response length: {len(answer)}")
         return answer
         
     except Exception as e:
         # Fallback response if API fails
-        print(f"LLM API error: {e}")
+        print(f"LLM API error: {type(e).__name__}: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return (
             "I'm having trouble connecting to the AI coach right now. "
             "Here's a basic rule of thumb: Try to keep your 'wants' spending below 30% of your income, "

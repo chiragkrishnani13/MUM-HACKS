@@ -1,0 +1,173 @@
+<div class="overview-page" *ngIf="analysis; else noData">
+  <!-- Financial Health Score -->
+  <div class="health-card" *ngIf="analysis.health_score">
+    <div class="hero-content">
+      <div class="score-circle">
+        <svg viewBox="0 0 200 200">
+          <circle cx="100" cy="100" r="90" fill="none" stroke="#e0e0e0" stroke-width="15"/>
+          <circle cx="100" cy="100" r="90" fill="none" 
+                  [attr.stroke]="getScoreColor(analysis.health_score.score)" 
+                  stroke-width="15" 
+                  [attr.stroke-dasharray]="565" 
+                  [attr.stroke-dashoffset]="565 - (565 * analysis.health_score.score / 100)"
+                  transform="rotate(-90 100 100)"
+                  style="filter: drop-shadow(0 0 8px currentColor); transition: all 0.3s ease;"/>
+        </svg>
+        <div class="score-content">
+          <div class="score-emoji">{{ getScoreEmoji(analysis.health_score.score) }}</div>
+          <div class="score-number">{{ analysis.health_score.score }}</div>
+          <div class="score-label">{{ getScoreLabel(analysis.health_score.score) }}</div>
+        </div>
+      </div>
+      <div class="hero-text">
+        <h1 class="hero-headline">Your Financial Health at a Glance</h1>
+        <p class="hero-subtitle">See how you're earning, spending, and saving this week</p>
+        <div class="hero-actions">
+          <button class="cta-primary" routerLink="/action-plan">
+            <span>📋</span>
+            <span>View Action Plan</span>
+          </button>
+          <button class="cta-secondary" routerLink="/chat">
+            <span>💬</span>
+            <span>Chat with AI Coach</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="summary-grid">
+    <div class="stat-card income">
+      <div class="stat-icon">💰</div>
+      <div class="stat-content">
+        <div class="stat-label">Total Income</div>
+        <div class="stat-value">₹{{ analysis.summary.total_income | number:'1.2-2' }}</div>
+      </div>
+    </div>
+
+    <div class="stat-card expenses">
+      <div class="stat-icon">💸</div>
+      <div class="stat-content">
+        <div class="stat-label">Total Expenses</div>
+        <div class="stat-value">₹{{ analysis.summary.total_expenses | number:'1.2-2' }}</div>
+      </div>
+    </div>
+
+    <div class="stat-card savings">
+      <div class="stat-icon">🎯</div>
+      <div class="stat-content">
+        <div class="stat-label">Savings Potential</div>
+        <div class="stat-value">₹{{ analysis.summary.savings_potential | number:'1.2-2' }}</div>
+      </div>
+    </div>
+
+    <div class="stat-card budget">
+      <div class="stat-icon">📊</div>
+      <div class="stat-content">
+        <div class="stat-label">Weekly Budget</div>
+        <div class="stat-value">₹{{ analysis.summary.suggested_weekly_budget | number:'1.2-2' }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Needs vs Wants -->
+  <div class="needs-wants-card">
+    <h3>Needs vs Wants Breakdown</h3>
+    <div class="breakdown-bars">
+      <div class="bar-item">
+        <div class="bar-label">
+          <span>Needs</span>
+          <span class="bar-value">₹{{ analysis.summary.total_needs | number:'1.2-2' }}</span>
+        </div>
+        <div class="bar-bg">
+          <div class="bar-fill needs" 
+               [style.width.%]="(analysis.summary.total_needs / analysis.summary.total_expenses * 100)"></div>
+        </div>
+      </div>
+      <div class="bar-item">
+        <div class="bar-label">
+          <span>Wants</span>
+          <span class="bar-value">₹{{ analysis.summary.total_wants | number:'1.2-2' }}</span>
+        </div>
+        <div class="bar-bg">
+          <div class="bar-fill wants" 
+               [style.width.%]="(analysis.summary.total_wants / analysis.summary.total_expenses * 100)"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Benchmarks -->
+  <div class="benchmarks-card" *ngIf="analysis.benchmarks">
+    <h3>📈 50/30/20 Rule Comparison</h3>
+    <div class="benchmark-items">
+      <div class="benchmark">
+        <div class="bench-header">
+          <span class="bench-title">Needs</span>
+          <span class="bench-status">{{ analysis.benchmarks.comparison.needs }}</span>
+        </div>
+        <div class="bench-values">
+          <span class="your-val">You: {{ analysis.benchmarks.your_split.needs }}%</span>
+          <span class="ideal-val">Ideal: 50%</span>
+        </div>
+      </div>
+      <div class="benchmark">
+        <div class="bench-header">
+          <span class="bench-title">Wants</span>
+          <span class="bench-status">{{ analysis.benchmarks.comparison.wants }}</span>
+        </div>
+        <div class="bench-values">
+          <span class="your-val">You: {{ analysis.benchmarks.your_split.wants }}%</span>
+          <span class="ideal-val">Ideal: 30%</span>
+        </div>
+      </div>
+      <div class="benchmark">
+        <div class="bench-header">
+          <span class="bench-title">Savings</span>
+          <span class="bench-status">{{ analysis.benchmarks.comparison.savings }}</span>
+        </div>
+        <div class="bench-values">
+          <span class="your-val">You: {{ analysis.benchmarks.your_split.savings }}%</span>
+          <span class="ideal-val">Ideal: 20%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Insights -->
+  <div class="insights-card">
+    <h3>🎯 Key Insights</h3>
+    <div class="insight-list">
+      <div class="insight-item" *ngFor="let flag of analysis.flags">
+        {{ flag }}
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #noData>
+  <div class="no-data">
+    <div class="no-data-illustration">
+      <div class="no-data-icon">📤</div>
+      <div class="no-data-circle"></div>
+      <div class="no-data-circle delay"></div>
+    </div>
+    <h2>Welcome to FlexiCoach!</h2>
+    <p>Upload your bank statement to get started with personalized financial insights</p>
+    <div class="empty-state-features">
+      <div class="feature-item">
+        <span class="feature-icon">📊</span>
+        <span>Smart Analysis</span>
+      </div>
+      <div class="feature-item">
+        <span class="feature-icon">🎯</span>
+        <span>Goal Tracking</span>
+      </div>
+      <div class="feature-item">
+        <span class="feature-icon">💬</span>
+        <span>AI Coach</span>
+      </div>
+    </div>
+  </div>
+</ng-template>

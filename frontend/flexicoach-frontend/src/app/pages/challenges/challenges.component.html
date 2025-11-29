@@ -1,0 +1,130 @@
+<div class="challenges-page" *ngIf="analysis; else noData">
+  <div class="page-header">
+    <h1>🎮 Smart Money Challenges</h1>
+    <p class="subtitle">Gamify your savings with challenges tailored to your habits</p>
+  </div>
+
+  <div class="challenges-grid" *ngIf="analysis.challenges && analysis.challenges.length > 0">
+    <div class="challenge-card" *ngFor="let challenge of analysis.challenges" [class]="getDifficultyClass(challenge.difficulty)">
+      <div class="challenge-metadata">
+        <span class="meta-tag savings-impact">💰 High Savings Impact</span>
+        <span class="meta-tag difficulty" [class]="getDifficultyClass(challenge.difficulty)">
+          🎯 {{ challenge.difficulty }} Difficulty
+        </span>
+        <span class="meta-tag timeline">⏱️ 7-14 days</span>
+      </div>
+      
+      <div class="challenge-header">
+        <div class="challenge-title">{{ challenge.title }}</div>
+        <div class="difficulty-badge" [class]="getDifficultyClass(challenge.difficulty)">
+          {{ challenge.difficulty }}
+        </div>
+      </div>
+
+      <p class="challenge-description">{{ challenge.description }}</p>
+
+      <div class="challenge-progress">
+        <div class="progress-header">
+          <span class="progress-label">Progress</span>
+          <span class="progress-value">{{ challenge.current }} / {{ challenge.target }}</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="getProgressPercentage(challenge)"></div>
+        </div>
+      </div>
+
+      <div class="challenge-footer">
+        <div class="reward">
+          <span class="reward-icon">🎁</span>
+          <span class="reward-text">{{ challenge.reward }}</span>
+        </div>
+        <div class="points">
+          <span class="points-icon">⭐</span>
+          <span class="points-value">{{ challenge.points }} pts</span>
+        </div>
+      </div>
+
+      <button 
+        [class]="getButtonClass(challenge)"
+        [disabled]="isButtonDisabled(challenge)"
+        (click)="acceptChallenge(challenge)">
+        {{ getButtonLabel(challenge) }}
+      </button>
+    </div>
+  </div>
+
+  <div class="achievement-section">
+    <h2>🏆 Your Achievements</h2>
+    <div class="achievements-grid">
+      <div class="achievement-badge locked">
+        <div class="badge-icon">🔒</div>
+        <div class="badge-name">First Challenge</div>
+        <div class="badge-desc">Complete your first challenge</div>
+      </div>
+      <div class="achievement-badge locked">
+        <div class="badge-icon">🔒</div>
+        <div class="badge-name">Savings Streak</div>
+        <div class="badge-desc">Save for 7 consecutive days</div>
+      </div>
+      <div class="achievement-badge locked">
+        <div class="badge-icon">🔒</div>
+        <div class="badge-name">Budget Master</div>
+        <div class="badge-desc">Stay within budget for a month</div>
+      </div>
+      <div class="achievement-badge locked">
+        <div class="badge-icon">🔒</div>
+        <div class="badge-name">Challenge Champion</div>
+        <div class="badge-desc">Complete 10 challenges</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="leaderboard-section">
+    <h2>📊 This Month's Leaderboard</h2>
+    <p class="leaderboard-note">Compete anonymously with others in your income bracket</p>
+    <div class="leaderboard-list">
+      <div class="leaderboard-item top-3">
+        <span class="rank">🥇</span>
+        <span class="username">Saver123</span>
+        <span class="score">2,450 pts</span>
+      </div>
+      <div class="leaderboard-item top-3">
+        <span class="rank">🥈</span>
+        <span class="username">BudgetPro</span>
+        <span class="score">2,200 pts</span>
+      </div>
+      <div class="leaderboard-item top-3">
+        <span class="rank">🥉</span>
+        <span class="username">MoneyWise</span>
+        <span class="score">1,980 pts</span>
+      </div>
+      <div class="leaderboard-item">
+        <span class="rank">4</span>
+        <span class="username">SmartSpender</span>
+        <span class="score">1,750 pts</span>
+      </div>
+      <div class="leaderboard-item you">
+        <span class="rank">5</span>
+        <span class="username">You</span>
+        <span class="score">0 pts</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #noData>
+  <div class="no-data">
+    <div class="no-data-illustration">
+      <div class="no-data-icon">🎮</div>
+      <div class="no-data-circle"></div>
+      <div class="no-data-circle delay"></div>
+    </div>
+    <h2>No Active Challenges</h2>
+    <p>Upload your transactions to unlock personalized money-saving challenges tailored to your habits!</p>
+    <div class="empty-benefits">
+      <div class="benefit-badge">🏆 Earn Rewards</div>
+      <div class="benefit-badge">📈 Track Progress</div>
+      <div class="benefit-badge">💪 Build Habits</div>
+    </div>
+  </div>
+</ng-template>

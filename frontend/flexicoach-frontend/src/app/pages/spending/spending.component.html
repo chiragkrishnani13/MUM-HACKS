@@ -1,0 +1,46 @@
+<div class="spending-page" *ngIf="analysis; else noData">
+  <h2>💳 Spending Analysis</h2>
+
+  <div class="categories-grid">
+    <div class="category-card" *ngFor="let cat of analysis.categories">
+      <div class="category-icon">💰</div>
+      <div class="category-info">
+        <h3>{{ cat.name | titlecase }}</h3>
+        <p class="category-amount">₹{{ cat.amount | number:'1.2-2' }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="patterns-card" *ngIf="analysis.patterns">
+    <h3>🔍 Spending Patterns</h3>
+    <div class="pattern-stats">
+      <div class="pattern-item">
+        <span class="pattern-label">Highest Spending Day:</span>
+        <span class="pattern-value">{{ analysis.patterns.highest_spending_day }}</span>
+      </div>
+      <div class="pattern-item">
+        <span class="pattern-label">Longest Spending Streak:</span>
+        <span class="pattern-value">{{ analysis.patterns.longest_spending_streak }} days</span>
+      </div>
+    </div>
+
+    <div *ngIf="analysis.patterns.large_transactions && analysis.patterns.large_transactions.length > 0">
+      <h4>⚠️ Large Transactions</h4>
+      <div class="transaction-list">
+        <div class="transaction-item" *ngFor="let txn of analysis.patterns.large_transactions">
+          <span class="txn-date">{{ txn.date }}</span>
+          <span class="txn-desc">{{ txn.description }}</span>
+          <span class="txn-amount">₹{{ txn.amount | number:'1.2-2' }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #noData>
+  <div class="no-data">
+    <div class="no-data-icon">💳</div>
+    <h2>No Spending Data</h2>
+    <p>Upload your transactions to see detailed spending analysis.</p>
+  </div>
+</ng-template>

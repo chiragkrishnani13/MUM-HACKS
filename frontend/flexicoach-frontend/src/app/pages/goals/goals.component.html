@@ -1,0 +1,61 @@
+<div class="goals-page" *ngIf="analysis; else noData">
+  <h2>🎯 Your Personalized Savings Goals</h2>
+  
+  <div class="goals-grid" *ngIf="analysis.savings_goals && analysis.savings_goals.length > 0">
+    <div class="goal-card" *ngFor="let goal of analysis.savings_goals" [class]="goal.priority.toLowerCase()">
+      <div class="goal-header">
+        <h3>{{ goal.type }}</h3>
+        <span class="priority-badge" [class]="goal.priority.toLowerCase()">
+          {{ goal.priority }} Priority
+        </span>
+      </div>
+      
+      <p class="goal-description" *ngIf="goal.description">{{ goal.description }}</p>
+      
+      <div class="goal-details">
+        <div class="detail-item">
+          <span class="label">Target:</span>
+          <span class="value">₹{{ goal.target | number:'1.2-2' }}</span>
+        </div>
+        <div class="detail-item" *ngIf="goal.current !== undefined">
+          <span class="label">Current:</span>
+          <span class="value">₹{{ goal.current | number:'1.2-2' }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="label">Timeline:</span>
+          <span class="value">{{ goal.timeline }}</span>
+        </div>
+      </div>
+
+      <div class="progress-bar" *ngIf="goal.current !== undefined && goal.target > 0">
+        <div class="progress-fill" [style.width.%]="(goal.current / goal.target * 100)"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="predictions-card" *ngIf="analysis.predictions">
+    <h3>🔮 Next Month Prediction</h3>
+    <div class="prediction-grid">
+      <div class="prediction-item">
+        <span class="pred-label">Predicted Expenses</span>
+        <span class="pred-value">₹{{ analysis.predictions.predicted_monthly_expenses | number:'1.2-2' }}</span>
+      </div>
+      <div class="prediction-item">
+        <span class="pred-label">Daily Average</span>
+        <span class="pred-value">₹{{ analysis.predictions.daily_average | number:'1.2-2' }}</span>
+      </div>
+      <div class="prediction-item">
+        <span class="pred-label">Confidence</span>
+        <span class="pred-value">{{ analysis.predictions.confidence }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #noData>
+  <div class="no-data">
+    <div class="no-data-icon">🎯</div>
+    <h2>No Goals Available</h2>
+    <p>Upload your transactions to get personalized savings goals.</p>
+  </div>
+</ng-template>

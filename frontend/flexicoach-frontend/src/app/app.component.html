@@ -1,0 +1,101 @@
+<div class="app-container" [class.menu-open]="menuOpen">
+  <!-- Mobile Menu Button -->
+  <button class="mobile-menu-btn" (click)="toggleMenu()" aria-label="Toggle menu">
+    <span class="hamburger-icon">
+      <span></span>
+      <span></span>
+      <span></span>
+    </span>
+  </button>
+
+  <!-- Overlay for mobile -->
+  <div class="menu-overlay" *ngIf="menuOpen" (click)="toggleMenu()"></div>
+
+  <!-- Sidebar Navigation -->
+  <aside class="sidebar" [class.open]="menuOpen">
+    <div class="logo-header">
+      <div class="logo-content">
+        <div class="logo">💰 FlexiCoach</div>
+        <div class="tagline">Your Personal Money Mentor</div>
+      </div>
+    </div>
+
+    <nav>
+      <div class="nav-section">
+        <div class="section-title">MAIN</div>
+        <a routerLink="/overview" routerLinkActive="active" class="nav-item" (click)="closeMenuOnMobile()">
+          <span>📊</span>
+          <span>Overview</span>
+        </a>
+        <a routerLink="/insights" routerLinkActive="active" class="nav-item" (click)="closeMenuOnMobile()">
+          <span>🔍</span>
+          <span>Insights</span>
+        </a>
+        <a routerLink="/challenges" routerLinkActive="active" class="nav-item" (click)="closeMenuOnMobile()">
+          <span>🎮</span>
+          <span>Challenges</span>
+        </a>
+        <a routerLink="/chat" routerLinkActive="active" class="nav-item" (click)="closeMenuOnMobile()">
+          <span>💬</span>
+          <span>Chat</span>
+        </a>
+        <a routerLink="/goals" routerLinkActive="active" class="nav-item" (click)="closeMenuOnMobile()">
+          <span>🎯</span>
+          <span>Goals</span>
+        </a>
+        <a routerLink="/spending" routerLinkActive="active" class="nav-item" (click)="closeMenuOnMobile()">
+          <span>💳</span>
+          <span>Spending</span>
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <div class="section-title">GENERATED PLAN</div>
+        <a routerLink="/action-plan" routerLinkActive="active" class="nav-item" (click)="closeMenuOnMobile()">
+          <span>📋</span>
+          <span>Action Plan</span>
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <div class="section-title">SETTINGS</div>
+        <a class="nav-item" (click)="closeMenuOnMobile()">
+          <span>⚙️</span>
+          <span>Preferences</span>
+        </a>
+        <a class="nav-item" (click)="closeMenuOnMobile()">
+          <span>🔒</span>
+          <span>Privacy</span>
+        </a>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="main-content">
+    <div class="topbar">
+      <div class="topbar-left">
+        <h1>Financial Dashboard</h1>
+        <p class="greeting">👋 Hi there! Here's your money snapshot for this month.</p>
+      </div>
+      <div class="upload-section">
+        <input 
+          type="file" 
+          accept=".csv" 
+          (change)="onFileSelected($event)" 
+          id="fileInput">
+        <label for="fileInput">
+          <span *ngIf="!selectedFile">📤 Choose File</span>
+          <span *ngIf="selectedFile">{{ selectedFile.name }}</span>
+        </label>
+        <button (click)="analyzeTransactions()" [disabled]="!selectedFile || loading">
+          {{ loading ? 'Analyzing...' : 'Analyze' }}
+        </button>
+      </div>
+    </div>
+
+    <div class="page-content">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>

@@ -70,10 +70,15 @@ def clean_transactions(df: pd.DataFrame) -> pd.DataFrame:
     df_clean['amount'] = df_clean['amount_raw'].apply(parse_amount)
     
     # Drop rows with invalid date or amount
+    rows_before = len(df_clean)
     df_clean = df_clean.dropna(subset=['date', 'amount'])
+    rows_after = len(df_clean)
+    
+    if rows_before > rows_after:
+        print(f"Warning: Dropped {rows_before - rows_after} rows with invalid date/amount")
     
     if df_clean.empty:
-        raise ValueError("No valid transactions found after cleaning")
+        raise ValueError(f"No valid transactions found after cleaning. Original CSV had {len(df)} rows. Check if dates and amounts are in correct format.")
     
     # Determine if transaction is expense or income
     # Strategy: Check for debit/credit columns, or infer from amount sign

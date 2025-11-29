@@ -1,0 +1,69 @@
+<div class="chat-page" *ngIf="analysis; else noData">
+  <div class="chat-header">
+    <h2>💬 Chat with Your AI Coach</h2>
+    <p>Ask me anything about your finances!</p>
+    <p class="powered-by">Powered by AI – responses are personalized using your spending data</p>
+  </div>
+
+  <div class="chat-messages">
+    <div *ngIf="messages.length === 0" class="welcome-message">
+      <div class="welcome-icon">🤖</div>
+      <h3>Hi! I'm your FlexiCoach AI</h3>
+      <p>Ask me questions like:</p>
+      <div class="quick-questions">
+        <button class="chip-btn" (click)="askQuickQuestion('How can I save more money?')">
+          💰 How can I save more money?
+        </button>
+        <button class="chip-btn" (click)="askQuickQuestion('Where am I overspending?')">
+          🔍 Where am I overspending?
+        </button>
+        <button class="chip-btn" (click)="askQuickQuestion('Should I cut back on eating out?')">
+          🍽️ Should I cut back on eating out?
+        </button>
+        <button class="chip-btn" (click)="askQuickQuestion('How do I build an emergency fund?')">
+          🏦 How do I build an emergency fund?
+        </button>
+      </div>
+    </div>
+
+    <div class="message-wrapper" *ngFor="let msg of messages" [class.user-wrapper]="msg.type === 'user'" [class.coach-wrapper]="msg.type === 'coach'">
+      <div class="message" [class.user]="msg.type === 'user'" [class.coach]="msg.type === 'coach'">
+        <div class="message-avatar">{{ msg.type === 'user' ? '👤' : '🤖' }}</div>
+        <div class="message-bubble">
+          <div class="message-text">{{ msg.text }}</div>
+          <div class="message-time">{{ getCurrentTime() }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="loading" class="message coach loading-msg">
+      <div class="message-avatar">🤖</div>
+      <div class="message-content">
+        <div class="typing-indicator">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-input">
+    <input 
+      type="text" 
+      [(ngModel)]="question" 
+      placeholder="Ask your financial coach..."
+      (keyup.enter)="askCoach()"
+      [disabled]="loading">
+    <button (click)="askCoach()" [disabled]="!question.trim() || loading">
+      <span>Send</span>
+      <span class="send-icon">📤</span>
+    </button>
+  </div>
+</div>
+
+<ng-template #noData>
+  <div class="no-data">
+    <div class="no-data-icon">💬</div>
+    <h2>Chat Not Available</h2>
+    <p>Please upload your transactions first to start chatting with your AI coach.</p>
+  </div>
+</ng-template>
